@@ -39,7 +39,7 @@ class Bill extends Model
             // Retrieve the latest customer created within today
             $latestCustomer = static::withTrashed()
                 ->whereDate('billed_at', today())
-                ->latest('billed_at')
+                ->latest()
                 ->first();
 
             info($latestCustomer);

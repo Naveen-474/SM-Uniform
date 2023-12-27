@@ -47,7 +47,7 @@
                         <div class="col-md-4">
                             <input class="form-control @error('address') is-invalid @enderror" type="text" id="product-count-1" name="product_count_1"
                                    placeholder="Enter No of Product"
-                                   value="{{ old('product_count_1') ? old('product_count_1') : (!empty($customer->address) ? $customer->address : '') }}"/>
+                                   value="{{ old('product_count_1') ? old('product_count_1') : ''}}"/>
                         </div>
                         <div class="col-md-2" style="margin-left: -6px">
                             <button class="btn btn-default text-center" id="add-field">
@@ -203,56 +203,36 @@
                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
             },
             success: function (response) {
-                console.log(response);
-                alert('Success..!!');
-                // showSessionMessage(response['status'], 'growl-success', 'Success!');
+                showSessionMessage(response['success'], 'growl-success', 'Success!');
                 window.location.replace('/bill');
             },
             error: function (error) {
-                console.log(error);
-                alert('Failure..!!');
                 products = [];
                 productCounts = [];
                 removedIds = [];
-                // showSessionMessage(errorMessage, 'growl-error', 'Error!');
-                // if (error['status'] === 422) {
-                //     var errorFieldIds = [];
-                //     var errorMessageFromResponse = error['responseJSON']['error'];
-                //     for (const key in errorMessageFromResponse) {
-                //         const matches = key.match(/reasons\.(\d+)/);
-                //         if (matches) {
-                //             const index = parseInt(matches[1], 10);
-                //             let message = errorMessageFromResponse[key][0];
-                //             const spanValue = index + 1;
-                //             if (message.endsWith("has already been taken.")) {
-                //                 message = 'This reason has already been taken.'
-                //             }
-                //             $('#user_app_booking_cancel_reason_error_' + spanValue).removeClass('hide');
-                //             $('#user_app_booking_cancel_reason_error_' + spanValue).html(message);
-                //             setAndUnsetAsErrorField(true, '#user_app_booking_cancel_reason_' + spanValue);
-                //             errorFieldIds.push(spanValue);
-                //         }
-                //         if (key.match(/reasons/)) {
-                //             swal({
-                //                 title: 'Max Limit Exceed',
-                //                 html: true,
-                //                 text: 'You have reached the maximum limit for creating booking condition reasons. The system allows a maximum of 7 reasons.',
-                //                 type: 'error',
-                //                 showConfirmButton: true
-                //             });
-                //             return;
-                //         }
-                //     }
-                //     for (var correctIndex = 1; correctIndex <= cancelReasonTextBoxCount; correctIndex++) {
-                //         if(!errorFieldIds.includes(correctIndex )) {
-                //             setAndUnsetAsErrorField(false, '#user_app_booking_cancel_reason_' + correctIndex);
-                //         }
-                //     }
-                // }
+                if (error['status'] === 422) {
+                    var mainMessage = error['responseJSON']['message'];
+                    console.log(mainMessage);
+                }
+                showSessionMessage(mainMessage, 'growl-error', 'Error!');
             }
         });
     }
 
+    function showSessionMessage(message, theme, header) {
+        $.jGrowl(message, {
+            sticky: false,
+            theme: theme,
+            header: header,
+            life: 3000
+        });
+    }
+
+    if ('{{ session('success') }}') {
+        showSessionMessage('{{ session('success') }}', 'growl-success', 'Success!');
+    } else if ('{{ session('error') }}') {
+        showSessionMessage('{{ session('error') }}', 'growl-warning', 'Warning!');
+    }
 
 </script>
 

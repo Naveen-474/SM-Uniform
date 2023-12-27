@@ -61,18 +61,18 @@ class BillController extends Controller
             }
 
             DB::commit();
-            return response()->json(['status' => 'User App Booking Cancel Reason added successfully!'], 201);
+            return response()->json(['success' => 'Bill Generated Successfully..!!'], 201);
         } catch (\Exception $e)
         {
             Log::error([
                 'error' => [
-                    'location' => 'CabController@update',
+                    'location' => 'BillController@update',
                     'message' => $e->getMessage(),
                     'trace' => $e->getTraceAsString(),
                 ],
             ]);
             DB::rollBack();
-            return redirect()->route('customer-details.index')->with('failure', 'Customer Not Created');
+            return response()->json(['error' => 'Bill Not Generated..!!'], 422);
         }
     }
 
