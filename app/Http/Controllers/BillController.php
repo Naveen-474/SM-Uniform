@@ -100,25 +100,40 @@ class BillController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(CustomerRequest $request, string $id)
+    public function update(BillRequest $request, string $id)
     {
         try {
             DB::beginTransaction();
-            Bill::where('id', $id)->update([
-                'name' => $request->name,
-                'address' => $request->address,
-                'pin_code' => $request->pin_code,
-                'mobile_number' => $request->mobile_number,
-                'gstin' => $request->gstin,
+            $bill = Bill::find($id);
+            $bill->update([
+                'customer_id' => $request->customer,
+                'billed_at' => $request->billed_at,
             ]);
+            if ($bill) {
+                BillProduct::where('bill_id', $bill->id)->delete();
 
+                // Create bill_products entries
+                foreach ($request['products'] as $key => $product) {
+                    BillProduct::create([
+                        'bill_id' => $bill->id,
+                        'product_id' => $product,
+                        'product_count' => $request['product_count'][$key],
+                    ]);
+                }
+            }
             DB::commit();
-
-            return redirect()->route('bill.index')->with('success', 'Customer Updated Successfully..!!');
+            return response()->json(['success' => 'Bill Updated Successfully..!!'], 201);
         } catch (\Exception $e)
         {
+            Log::error([
+                'error' => [
+                    'location' => 'BillController@update',
+                    'message' => $e->getMessage(),
+                    'trace' => $e->getTraceAsString(),
+                ],
+            ]);
             DB::rollBack();
-            return redirect()->route('bill.index')->with('success', 'Customer Not Created');
+            return response()->json(['error' => 'Bill Not Updated..!!'], 422);
         }
     }
 

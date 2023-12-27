@@ -5,10 +5,9 @@
         @php
             $canEdit = $canEdit ?? true;
             $currentRoute = Illuminate\Support\Facades\Route::currentRouteName();
-            info($bill);
             $billProducts = App\Models\BillProduct::with('product')->where('bill_id', $bill->id)->get();
-            info($billProducts);
-        $products = App\Models\Product::get();
+            $products = App\Models\Product::get();
+            $customers = App\Models\Customer::get();
         @endphp
         <div class="col-md-12">
             <div class="m-2 text-start">
@@ -23,9 +22,11 @@
                                 <label for="customer" class="form-label col-md-4">Choose Customer</label>
                                 <label>
                                     <select class="form-select col-md-8 select2" name="customer" id="customer" aria-label="Default select example">
-{{--                                        @foreach ($bill as $customer )--}}
-                                            <option value="{{ $bill->customer->id }}">{{ $bill->customer->name }}</option>
-{{--                                        @endforeach--}}
+                                        @foreach($customers as $customer)
+                                            <option value="{{ $customer->id }}" {{ $bill->customer->id == $customer->id ? 'selected' : '' }}>
+                                                {{ $customer->name }}
+                                            </option>
+                                        @endforeach
                                     </select>
                                 </label>
                             </div>
@@ -33,7 +34,7 @@
                                 <label for="billed-at" class="col-md-2 col-form-label">Bill Date</label>
                                 <label>
                                     <div class="col-md-10">
-                                        <input class="form-control" type="date" id="billed-at"  name="billed_at" value="{{ $bill->billed_at }}"/>
+                                        <input class="form-control" type="date" id="billed-at" name="billed_at" value="{{ \Carbon\Carbon::parse($bill->billed_at)->format('Y-m-d') }}" disabled/>
                                     </div>
                                 </label>
                             </div>
@@ -53,7 +54,7 @@
                                     <div class="col-md-4">
                                         <select class="form-select col-md-10 select2" id="product-1" name="product_1"
                                                 aria-label="Default select example">
-                                                <option value="{{ $product->id }}">{{ $product->product->name }}</option>
+                                                <option value="{{ $product->product->id }}">{{ $product->product->name }}</option>
                                         </select>
                                     </div>
                                     <div class="col-md-4">
@@ -75,7 +76,7 @@
                         <div style="margin-top: 20px;" class="text-end">
                             <a href="{{ url('/customer-details') }}" class="btn rounded-pill btn-danger">Cancel</a>
                             <a class="btn rounded-pill btn-success tip" title="Save"
-                               onclick="saveBillDetails()">Save</a>
+                               onclick="saveBillDetails({{$bill->id}})">Save</a>
                         </div>
                     @endunless
                 </div>
@@ -84,15 +85,15 @@
 
         <script>
             let counter = 1;
+            let removedIds = [];
+            let products = [];
+            let productCounts = [];
             $(document).ready(function () {
-                const removedIds = [];
-
                 function initializeSelect2() {
                     $("select").select2({
                         width: '100%'
                     });
                 }
-
                 // Initial Select2 setup
                 initializeSelect2();
 
@@ -184,11 +185,7 @@
                 });
             });
 
-            var products = [];
-            var productCounts = [];
-            var removedIds = [];
-
-            function saveBillDetails() {
+            function saveBillDetails(billId) {
 
                 var customer = $('#customer').val();
                 var billedAt = $('#billed-at').val();
@@ -209,13 +206,10 @@
                     productCounts.push(productCount);
                 }
 
-                console.log(products);
-                console.log(productCounts);
-
                 // Ajax call to create or update the records
                 $.ajax({
-                    type: "POST",
-                    url: "/bill",
+                    type: "PATCH",
+                    url: "/bill/" + billId,
                     data: {
                         customer: customer,
                         billed_at: billedAt,
@@ -226,56 +220,36 @@
                         'X-CSRF-TOKEN': '{{ csrf_token() }}'
                     },
                     success: function (response) {
-                        console.log(response);
-                        alert('Success..!!');
-                        // showSessionMessage(response['status'], 'growl-success', 'Success!');
+                        showSessionMessage(response['success'], 'growl-success', 'Success!');
                         window.location.replace('/bill');
                     },
                     error: function (error) {
-                        console.log(error);
-                        alert('Failure..!!');
                         products = [];
                         productCounts = [];
                         removedIds = [];
-                        // showSessionMessage(errorMessage, 'growl-error', 'Error!');
-                        // if (error['status'] === 422) {
-                        //     var errorFieldIds = [];
-                        //     var errorMessageFromResponse = error['responseJSON']['error'];
-                        //     for (const key in errorMessageFromResponse) {
-                        //         const matches = key.match(/reasons\.(\d+)/);
-                        //         if (matches) {
-                        //             const index = parseInt(matches[1], 10);
-                        //             let message = errorMessageFromResponse[key][0];
-                        //             const spanValue = index + 1;
-                        //             if (message.endsWith("has already been taken.")) {
-                        //                 message = 'This reason has already been taken.'
-                        //             }
-                        //             $('#user_app_booking_cancel_reason_error_' + spanValue).removeClass('hide');
-                        //             $('#user_app_booking_cancel_reason_error_' + spanValue).html(message);
-                        //             setAndUnsetAsErrorField(true, '#user_app_booking_cancel_reason_' + spanValue);
-                        //             errorFieldIds.push(spanValue);
-                        //         }
-                        //         if (key.match(/reasons/)) {
-                        //             swal({
-                        //                 title: 'Max Limit Exceed',
-                        //                 html: true,
-                        //                 text: 'You have reached the maximum limit for creating booking condition reasons. The system allows a maximum of 7 reasons.',
-                        //                 type: 'error',
-                        //                 showConfirmButton: true
-                        //             });
-                        //             return;
-                        //         }
-                        //     }
-                        //     for (var correctIndex = 1; correctIndex <= cancelReasonTextBoxCount; correctIndex++) {
-                        //         if(!errorFieldIds.includes(correctIndex )) {
-                        //             setAndUnsetAsErrorField(false, '#user_app_booking_cancel_reason_' + correctIndex);
-                        //         }
-                        //     }
-                        // }
+                        if (error['status'] === 422) {
+                            var mainMessage = error['responseJSON']['message'];
+                            console.log(mainMessage);
+                        }
+                        showSessionMessage(mainMessage, 'growl-error', 'Error!');
                     }
                 });
             }
 
+            function showSessionMessage(message, theme, header) {
+                $.jGrowl(message, {
+                    sticky: false,
+                    theme: theme,
+                    header: header,
+                    life: 3000
+                });
+            }
+
+            if ('{{ session('success') }}') {
+                showSessionMessage('{{ session('success') }}', 'growl-success', 'Success!');
+            } else if ('{{ session('error') }}') {
+                showSessionMessage('{{ session('error') }}', 'growl-warning', 'Warning!');
+            }
 
         </script>
 

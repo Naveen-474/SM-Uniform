@@ -22,8 +22,6 @@ class BillRequest extends FormRequest
      */
     public function rules(): array
     {
-        info([request()->all()]);
-
         return [
             'products' => ['required', 'array', 'min:1'],
             'products.*' => ['distinct'],
