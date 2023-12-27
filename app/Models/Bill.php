@@ -35,51 +35,24 @@ class Bill extends Model
     {
         parent::boot();
 
-        static::creating(function ($product) {
-            // Retrieve the latest customer created within today
-            $latestCustomer = static::withTrashed()
-                ->whereDate('billed_at', today())
-                ->latest()
-                ->first();
-
-            info($latestCustomer);
-
-            // Extracting year, month, and day from the current date
-            $year = date('y');
-            $month = date('M');
-            $date = date('d');
-
-            // Formatting the invoice number
-            $invoiceNumber = 'SMU/' . $year . strtoupper($month) . $date . '/';
-
-            if ($latestCustomer) {
-                // Extracting the last invoice number's sequential part
-                $lastSequentialPart = substr($latestCustomer->bill_no, -2);
-
-                // Incrementing the sequential part and padding it
-                $sequentialPart = str_pad(((int)$lastSequentialPart + 1), 2, '0', STR_PAD_LEFT);
-
-                // Concatenating the sequential part to the invoice number
-                $invoiceNumber .= $sequentialPart;
-                info([
-                    '$latestCustomer' => $latestCustomer,
-                    '$invoiceNumber' => $invoiceNumber,
-                    '$lastSequentialPart' => $lastSequentialPart,
-                    '$sequentialPart' => $sequentialPart,
-                    '$invoiceNumber' => $invoiceNumber,
-                ]);
-            } else {
-                // If there are no previous invoices, use '01' as the sequential part
-                $invoiceNumber .= '01';
-            }
-
-            info($invoiceNumber);
-
-
-            // Assigning the generated invoice number to the product
-            $product->bill_no = $invoiceNumber;
+        static::creating(function ($bill) {
+            $bill->generateBillNumber();
         });
 
+    }
+
+    public function generateBillNumber()
+    {
+        $billedAt = $this->billed_at;
+        $year = date('y', strtotime($billedAt));
+        $month = strtoupper(date('M', strtotime($billedAt)));
+        $day = date('d', strtotime($billedAt));
+
+        $count = static::whereDate('billed_at', $billedAt)->count() + 1;
+
+        $billNo = "SMU/{$year}{$month}{$day}/" . sprintf('%02d', $count);
+
+        $this->bill_no = $billNo;
     }
 
 

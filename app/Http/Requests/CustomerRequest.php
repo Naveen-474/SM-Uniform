@@ -24,13 +24,12 @@ class CustomerRequest extends FormRequest
     public function rules(Request $request): array
     {
         $id = $this->route('customer_detail');
-        info($request);
         return [
             'name' => 'required|string|min:2|max:25',
             'address' => 'required|string|min:2|max:100',
             'pin_code' => 'required|string|min:1|max:6',
             'mobile_number' => 'required|integer|min:1|unique:customers,mobile_number,' . $id . ',id,deleted_at,NULL',
-            'gstin' => 'required|integer|min:1|unique:customers,gstin,' . $id . ',id,deleted_at,NULL',
+            'gstin' => 'required|min:1|unique:customers,gstin,' . $id . ',id,deleted_at,NULL',
         ];
     }
 }
