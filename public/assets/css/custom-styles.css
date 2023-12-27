@@ -1,0 +1,17 @@
+.dataTables_wrapper {
+    margin: 20px;
+}
+
+.text-content-editor {
+    height: 40px; /* set the initial height to a minimum value */
+    resize: none; /* prevent the user from manually resizing the textarea */
+}
+
+/*.select-full-width > .select2-container {*/
+/*    width: 100% !important;*/
+/*}*/
+
+/*.select-full-text .select2-choice > .select2-chosen {*/
+/*    text-transform: none !important;*/
+/*    font-size: 12px;*/
+/*}*/
