@@ -148,6 +148,6 @@ class BillController extends Controller
         $bill = (new BillTransformer)->transformForBill($bill, $companyDetails);
         $pdf = Pdf::loadView('bill.pdf', $bill);
 
-        return $pdf->download('invoice.pdf');
+        return $pdf->download($bill['bill_no'] . '.pdf');
     }
 }

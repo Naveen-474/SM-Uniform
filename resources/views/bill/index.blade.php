@@ -42,18 +42,13 @@
                     <tr>
                         <td>{{$bill->bill_no}}</td>
                         <td>{{$bill->customer->name}}</td>
-                        <td>{{$bill->billed_at}}</td>
-                        <td>{{$bill->created_at}}</td>
-                        <td>{{$bill->updated_at}}</td>
+                        <td>{{getDateString($bill->billed_at)}}</td>
+                        <td>{{getDateString($bill->created_at)}}</td>
+                        <td>{{getDateString($bill->updated_at)}}</td>
                         <td>
                             <a href="{{route('bill.show', $bill->id)}}" title="Show"><i class='bx bxs-show'></i></a>
                             <a href="{{route('bill.edit', $bill->id)}}" title="Edit"><i class='bx bx-edit'></i></a>
                             <a href="{{route('bill_download', $bill->id)}}" title="Download"><i class='bx bx-download'></i></a>
-                            <form method="POST" action="{{route('bill.destroy', $bill->id)}}" class="d-inline">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" title="Delete" class="button" style="color: #696cff;"><i class='bx bx-minus-circle'></i></button>
-                            </form>
                         </td>
                     </tr>
                 @endforeach

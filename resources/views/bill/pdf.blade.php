@@ -44,7 +44,7 @@
            $totalProductCount += $billProduct['product_count'];
            $totalTaxableAmount += ($product->price * $billProduct['product_count']);
        }
-       $emptyRowCount = max(0, 13 - count($bill_products));
+       $emptyRowCount = max(0, 12 - count($bill_products));
        $totalGstAmount = $totalTaxableAmount * ($gst_percentage / 100);
        $netAmount = $totalTaxableAmount + $totalGstAmount;
     @endphp
@@ -58,7 +58,7 @@
         <tr class="no-top-bottom-border no-left-right-border">
             <td colspan="2">
                 {{ $company_name }} <br>
-                {{ $company_address }} <br>
+                {!! nl2br(e($company_address)) !!} <br>
             </td>
             <td colspan="2" style="text-align: right; vertical-align: top;">
                 <span style="font-weight: bold; display: inline-block; width: 100px;">e-mail</span>
