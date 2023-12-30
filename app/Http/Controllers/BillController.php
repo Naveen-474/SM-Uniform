@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use App\Transformers\BillTransformer;
+use Carbon\Carbon;
 
 class BillController extends Controller
 {
@@ -23,7 +24,7 @@ class BillController extends Controller
      */
     public function index()
     {
-        $bills = Bill::get();
+        $bills = Bill::orderBy('billed_at', 'asc')->paginate(10);
         return view('bill.index', compact('bills'));
     }
 
@@ -44,9 +45,11 @@ class BillController extends Controller
     {
         try {
             DB::beginTransaction();
+            $billedAt = Carbon::createFromFormat('m/d/Y',$request->billed_at)->format('Y-m-d');
+
             $bill = Bill::create([
                 'customer_id' => $request->customer,
-                'billed_at' => $request->billed_at,
+                'billed_at' =>$billedAt,
             ]);
             // Check if the bill was created successfully
             if ($bill) {
@@ -164,5 +167,13 @@ class BillController extends Controller
         $pdf = Pdf::loadView('bill.pdf', $bill);
 
         return $pdf->download($bill['bill_no'] . '.pdf');
+    }
+
+    public function getHolidayDates()
+    {
+        // Retrieve disabled dates from your database or other source
+        $disabledDates = ['2024-01-01', '2024-01-14', '2024-01-15', '2024-01-16', '2024-01-26'];
+
+        return response()->json(['disabledDates' => $disabledDates]);
     }
 }

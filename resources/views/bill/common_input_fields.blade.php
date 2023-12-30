@@ -25,7 +25,8 @@
                         <label for="billed-at" class="col-md-2 col-form-label">Bill Date</label>
                         <label>
                         <div class="col-md-10">
-                            <input class="form-control" type="date" id="billed-at"  name="billed_at"/>
+{{--                            <input type="text" id="myDateInput">--}}
+                            <input class="form-control date" type="text" id="billed-at" name="billed_at"/>
                         </div>
                         </label>
                     </div>
@@ -234,16 +235,37 @@
         showSessionMessage('{{ session('error') }}', 'growl-warning', 'Warning!');
     }
 
+    var disabledDates = [];
+
+    $(document).ready(function () {
+        $.ajax({
+            url: "{{ route('get_holiday_dates') }}",
+            dataType: "json",
+            success: function (data) {
+                disabledDates = data['disabledDates'];
+                $("#billed-at").datepicker("refresh");
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.error("Error fetching disabled dates:", textStatus, errorThrown);
+            }
+        });
+    });
+
+    $(function() {
+        $("#billed-at").datepicker({
+            beforeShowDay: function(date) {
+                var day = date.getDay();
+                var string = jQuery.datepicker.formatDate('yy-mm-dd', date);
+                return [(day != 0 && day != 6) && disabledDates.indexOf(string) == -1];
+            },
+            showButtonPanel: true
+        });
+    });
 </script>
 
 <style>
     .cloned-row {
         margin-top: 10px; /* Adjust the margin-bottom as needed */
     }
+
 </style>
-
-
-
-
-
-

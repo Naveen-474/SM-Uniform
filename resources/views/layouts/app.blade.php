@@ -37,6 +37,10 @@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-jgrowl/1.4.7/jquery.jgrowl.css" integrity="sha512-bJUzQNnX8ns5wfU5evv67e9ILktl3dr6xQlwWUhB743gV5dZgOOvhnTg7l8LH/8noxBLctysfkz2e9nH5QDg+g==" crossorigin="anonymous" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-jgrowl/1.4.7/jquery.jgrowl.min.js" integrity="sha512-h77yzL/LvCeAE601Z5RzkoG7dJdiv4KsNkZ9Urf1gokYxOqtt2RVKb8sNQEKqllZbced82QB7+qiDAmRwxVWLQ==" crossorigin="anonymous"></script>
+
+    <!-- For Date Picker -->
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
 </head>
 <body>
 

@@ -30,6 +30,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('/system-settings/company-details', 'App\Http\Controllers\CompanyDetailController')->only('index', 'store');
     Route::get('/bill/{id}/download', 'App\Http\Controllers\BillController@downloadBill')->name('bill_download');
     Route::get('/get-products', 'App\Http\Controllers\ProductController@getProducts');
+    Route::get('/get-holiday-dates', 'App\Http\Controllers\BillController@getHolidayDates')->name('get_holiday_dates');
 });
 
 require __DIR__.'/auth.php';
