@@ -35,9 +35,10 @@ class Bill extends Model
     {
         parent::boot();
 
-        static::creating(function ($bill) {
-            $bill->generateBillNumber();
-        });
+        // TODO :: Uncomment on next finance year
+//        static::creating(function ($bill) {
+//            $bill->generateBillNumber();
+//        });
 
     }
 

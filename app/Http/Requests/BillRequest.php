@@ -28,6 +28,7 @@ class BillRequest extends FormRequest
             'customer' => ['required','exists:customers,id'],
             'billed_at' => ['required'],
             'product_count' => ['required', 'array', 'min:1'],
+            'bill_no' => 'required',
         ];
     }
 }

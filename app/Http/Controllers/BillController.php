@@ -49,7 +49,8 @@ class BillController extends Controller
 
             $bill = Bill::create([
                 'customer_id' => $request->customer,
-                'billed_at' =>$billedAt,
+                'billed_at' => $billedAt,
+                'bill_no' => $request->bill_no,
             ]);
             // Check if the bill was created successfully
             if ($bill) {

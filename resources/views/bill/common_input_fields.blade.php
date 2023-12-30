@@ -11,7 +11,7 @@
         <div class="card-body">
             <div class="mb-3">
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <label for="customer" class="form-label col-md-4">Choose Customer</label>
                         <label>
                             <select class="form-select col-md-8 select2" name="customer" id="customer" aria-label="Default select example">
@@ -21,7 +21,15 @@
                             </select>
                         </label>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-4">
+                        <label for="billed-at" class="col-md-4 col-form-label">Bill No.</label>
+                        <label>
+                            <div class="col-md-10">
+                                <input class="form-control date" type="text" id="bill-no" name="bill_no"/>
+                            </div>
+                        </label>
+                    </div>
+                    <div class="col-md-4">
                         <label for="billed-at" class="col-md-2 col-form-label">Bill Date</label>
                         <label>
                         <div class="col-md-10">
@@ -170,6 +178,7 @@
 
         var customer = $('#customer').val();
         var billedAt = $('#billed-at').val();
+        var billNo = $('#bill-no').val();
         console.log('Counterrdffd');
         console.log(counter);
 
@@ -199,6 +208,7 @@
                 billed_at: billedAt,
                 products: products,
                 product_count: productCounts,
+                bill_no : billNo,
             },
             headers: {
                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
