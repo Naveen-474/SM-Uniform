@@ -266,7 +266,7 @@
             beforeShowDay: function(date) {
                 var day = date.getDay();
                 var string = jQuery.datepicker.formatDate('yy-mm-dd', date);
-                return [(day != 0 && day != 6) && disabledDates.indexOf(string) == -1];
+                return [(day != 0) && disabledDates.indexOf(string) == -1];
             },
             showButtonPanel: true
         });

@@ -192,8 +192,8 @@
                 <span style="display: inline-block; text-align: left;">{{ $bill['company_bank_ifsc_code'] }} </span>
             </td>
             <td style="text-align: right; vertical-align: middle; flex-direction: column; align-items: flex-end;">
-                <img src="{{ asset('assets/images/signature.png') }}" alt="Signature Image" style="width: 100px; height: auto; margin-bottom: 5px; margin-right: 30px;">
-                <div style="margin-right: 50px;">Signature</div>
+                <img src="{{ asset('assets/images/signature.png') }}" alt="Signature Image" style="width: 200px; height: auto;">
+                <div style="margin-right: 80px;">Signature</div>
             </td>
         </tr>
     </table>

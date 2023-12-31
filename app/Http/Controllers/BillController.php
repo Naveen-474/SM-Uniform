@@ -33,8 +33,8 @@ class BillController extends Controller
      */
     public function create()
     {
-        $customers = Customer::get();
-        $products = Product::get();
+        $customers = Customer::withTrashed()->get();
+        $products = Product::withTrashed()->get();
         return view('bill.create', compact('customers', 'products'));
     }
 
@@ -86,7 +86,7 @@ class BillController extends Controller
     public function show(string $id)
     {
         $bill = Bill::with('customer')->findOrFail($id);
-        $companyDetails = CompanyDetail::first();
+        $companyDetails = CompanyDetail::withTrashed()->first();
         $bill = (new BillTransformer)->transformForBill($bill, $companyDetails);
 
         return view('bill.show', compact('bill'));
@@ -173,7 +173,18 @@ class BillController extends Controller
     public function getHolidayDates()
     {
         // Retrieve disabled dates from your database or other source
-        $disabledDates = ['2024-01-01', '2024-01-14', '2024-01-15', '2024-01-16', '2024-01-26'];
+        $disabledDates = [
+            '2024-01-01', '2024-01-15', '2024-01-16', '2024-01-17', '2024-01-25',  '2024-01-26',
+            '2024-03-29',
+            '2024-04-09', '2024-04-11', '2024-04-14', '2024-04-21',
+            '2024-05-01',
+            '2024-06-17',
+            '2024-07-17',
+            '2024-08-15', '2024-08-26',
+            '2024-09-07', '2024-09-16',
+            '2024-10-02', '2024-10-11', '2024-10-12', '2024-10-31',
+            '2024-12-25',
+        ];
 
         return response()->json(['disabledDates' => $disabledDates]);
     }
