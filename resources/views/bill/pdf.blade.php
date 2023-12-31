@@ -90,7 +90,9 @@
                 {{$customer_name}}, <br>
                 {!! nl2br(e($customer_address)) !!}, <br>
                 {{$customer_pin_code}}. <br>
-                <span style="font-weight: bold;">Contact Number :</span> {{$customer_mobile_number}} <br>
+                @if ($customer_mobile_number)
+                    <span style="font-weight: bold;">Contact Number :</span> {{$customer_mobile_number}} <br>
+                @endif
                 <span style="font-weight: bold;">GSTIN :</span> {{$customer_gstin}} <br>
             </td>
             <td colspan="2" style="text-align: right; vertical-align: top;">
