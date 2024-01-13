@@ -86,7 +86,7 @@ class BillController extends Controller
     public function show(string $id)
     {
         $bill = Bill::with('customer')->findOrFail($id);
-        $companyDetails = CompanyDetail::withTrashed()->first();
+        $companyDetails = CompanyDetail::first();
         $bill = (new BillTransformer)->transformForBill($bill, $companyDetails);
 
         return view('bill.show', compact('bill'));

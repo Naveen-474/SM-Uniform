@@ -81,7 +81,7 @@
             <td colspan="4" style="text-align: center; font-weight: bold;">TAX INVOICE</td>
         </tr>
         <tr>
-            <td colspan="2"><span style="font-weight: bold;">GSTIN :</span> GSTNOAPBR</td>
+            <td colspan="2"><span style="font-weight: bold;">GSTIN :</span> {{ $company_gstin }} </td>
             <td colspan="2" style="text-align: right; font-weight: bold;">ORIGINAL FOR RECIPIENT</td>
         </tr>
         <tr>
