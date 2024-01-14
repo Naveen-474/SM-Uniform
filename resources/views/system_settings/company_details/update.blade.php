@@ -1,4 +1,4 @@
-@section('title', 'SM Uniform - Company Details')
+@section('title', 'SM Uniform - Company Detail')
 @extends('layouts.app')
 @section('content')
     <form class="form-horizontal validateForm" name="edit_individual" id="edit_individual" role="form" method="POST"
