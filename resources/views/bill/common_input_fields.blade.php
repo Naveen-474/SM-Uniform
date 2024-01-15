@@ -11,7 +11,27 @@
         <div class="card-body">
             <div class="mb-3">
                 <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-6 mt-1">
+                        <label for="billed-at" class="col-md-4 col-form-label">Bill No.</label>
+                        <label>
+                            <div class="col-md-10">
+                                <input class="form-control date" type="text" id="bill-no" name="bill_no"/>
+                            </div>
+                        </label>
+                    </div>
+                    <div class="col-md-6 mt-1">
+                        <label for="billed-at" class="col-md-4 col-form-label">Bill Date</label>
+                        <label>
+                            <div class="col-md-10">
+                                <input class="form-control date" type="text" id="billed-at" name="billed_at"/>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="mb-3">
+                <div class="row">
+                    <div class="col-md-6">
                         <label for="customer" class="form-label col-md-4">Choose Customer</label>
                         <label>
                             <select class="form-select col-md-8 select2" name="customer" id="customer" aria-label="Default select example">
@@ -21,31 +41,13 @@
                             </select>
                         </label>
                     </div>
-                    <div class="col-md-4">
-                        <label for="billed-at" class="col-md-4 col-form-label">Bill No.</label>
-                        <label>
-                            <div class="col-md-10">
-                                <input class="form-control date" type="text" id="bill-no" name="bill_no"/>
-                            </div>
-                        </label>
-                    </div>
-                    <div class="col-md-4">
-                        <label for="billed-at" class="col-md-2 col-form-label">Bill Date</label>
-                        <label>
-                        <div class="col-md-10">
-{{--                            <input type="text" id="myDateInput">--}}
-                            <input class="form-control date" type="text" id="billed-at" name="billed_at"/>
-                        </div>
-                        </label>
-                    </div>
                 </div>
             </div>
-
             <div class="mb-3">
                 <label for="product" class="form-label col-md-2">Choose Products</label>
                 <div id="product-container">
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-4 mt-1">
                             <select class="form-select col-md-10 select2" id="product-1" name="product_1"
                                     aria-label="Default select example">
                                 @foreach ($products as $product )
@@ -53,7 +55,7 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-4 mt-1">
                             <input class="form-control @error('address') is-invalid @enderror" type="text" id="product-count-1" name="product_count_1"
                                    placeholder="Enter No of Product"
                                    value="{{ old('product_count_1') ? old('product_count_1') : ''}}"/>
@@ -66,28 +68,16 @@
                     </div>
                 </div>
             </div>
-
             @unless(!$canEdit)
-{{--                {!! formButtons('Update') !!}--}}
                 <div style="margin-top: 20px;" class="text-end">
-{{--                    <a href="{{ route($currentRoute) }}" class="btn rounded-pill btn-warning">Clear</a>--}}
-                    <a href="{{ url('/customer-details') }}" class="btn rounded-pill btn-danger">Cancel</a>
+                    <a href="{{ url('/bill') }}" class="btn rounded-pill btn-danger">Cancel</a>
                         <a class="btn rounded-pill btn-success tip" title="Save"
                            onclick="saveBillDetails()">Save</a>
-{{--                        {!! cancelButton(['onclick' => "window.location='" . url('/user-app-booking-cancel-reason') . "'"]) !!}--}}
-{{--                    <button type="submit" class="btn rounded-pill btn-success">--}}
-{{--                        @if(!empty($customer))--}}
-{{--                            Update--}}
-{{--                        @else--}}
-{{--                            Create--}}
-{{--                        @endif--}}
-{{--                    </button>--}}
                 </div>
             @endunless
         </div>
     </div>
 </div>
-
 <script>
     let counter = 1;
     $(document).ready(function () {
@@ -99,13 +89,12 @@
             });
         }
 
-        // Initial Select2 setup
         initializeSelect2();
 
         $("#add-field").on("click", function (event) {
             event.preventDefault();
 
-            var clonedRow = $(".row:eq(1)").clone();
+            var clonedRow = $(".row:eq(2)").clone();
 
             clonedRow.find('.col-md-2').html('' +
                 '<button class="btn btn-default text-center remove-field"><i class="icon-plus-circle text-primary icon-position bx bx-minus-circle" onclick="removeElement(' + counter +')"></i></button>'
@@ -141,8 +130,6 @@
             });
 
             counter++;
-            console.log('counter');
-            console.log(counter);
             clonedRow.addClass('cloned-row');
 
             $("#product-container").append(clonedRow);
@@ -156,13 +143,10 @@
             // Get the IDs of the text input fields
             var textField = $(this).closest(".row").find("input[type='text']:eq(0)").attr("id");
             var selectField = $(this).closest(".row").find("select").attr("id");
-            console.log(textField);
-            console.log(selectField);
             var match = selectField.match(/\d+/);
             if (match) {
                 var number = parseInt(match[0]);
                 removedIds.push(number);
-                console.log(number); // Output: 2
             } else {
                 console.log("No number found in the string");
             }
@@ -179,8 +163,6 @@
         var customer = $('#customer').val();
         var billedAt = $('#billed-at').val();
         var billNo = $('#bill-no').val();
-        console.log('Counterrdffd');
-        console.log(counter);
 
         // To get all the data and format it
         for (var index = 1; index <= counter; index++) {
@@ -190,16 +172,10 @@
             }
             var product = $("#product-" + index).val();
             var productCount = $("#product-count-" + index).val();
-            console.log(product);
-            console.log(productCount);
             products.push(product);
             productCounts.push(productCount);
         }
 
-        console.log(products);
-        console.log(productCounts);
-
-        // Ajax call to create or update the records
         $.ajax({
             type: "POST",
             url: "/bill",
@@ -223,7 +199,6 @@
                 removedIds = [];
                 if (error['status'] === 422) {
                     var mainMessage = error['responseJSON']['message'];
-                    console.log(mainMessage);
                 }
                 showSessionMessage(mainMessage, 'growl-error', 'Error!');
             }
