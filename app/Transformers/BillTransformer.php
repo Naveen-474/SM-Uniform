@@ -32,6 +32,7 @@ class BillTransformer
             'company_bank_ifsc_code' => $companyDetails->bank_ifsc_code,
             'bill_products' => $billProducts,
             'gst_percentage' => 5,
+            'bill_id' => $bill->id,
         ];
     }
 }
