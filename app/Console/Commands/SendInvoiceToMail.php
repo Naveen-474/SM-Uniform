@@ -8,10 +8,7 @@ use App\Models\CompanyDetail;
 use App\Transformers\BillTransformer;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Mail;
-use App\Mail\DatabaseBackupStatus;
 
 class SendInvoiceToMail extends Command
 {
