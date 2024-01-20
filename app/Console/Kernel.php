@@ -13,6 +13,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
 //        $schedule->command('send:invoice-to-mail 5')->everyFiveMinutes();
+        $schedule->command('send:monthly-invoice-report')->monthly()->at('01:23');
     }
 
     /**
