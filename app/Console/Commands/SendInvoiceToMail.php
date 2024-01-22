@@ -32,7 +32,7 @@ class SendInvoiceToMail extends Command
             $pdf->save($pdfPath);
 
             // Assuming you have a 'InvoiceEmail' Mailable class
-            Mail::to('naveenkutty.in@gmail.com')
+            Mail::to($companyDetails->email)
                 ->send(new InvoiceEmail($bill['customer_name'], $pdfPath));
 
             $this->info('Invoice email sent successfully.');
