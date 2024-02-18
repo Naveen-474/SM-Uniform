@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use App\Transformers\BillTransformer;
 use Carbon\Carbon;
+use App\Jobs\UploadBillToGoogleDrive;
 
 class BillController extends Controller
 {
@@ -164,10 +165,18 @@ class BillController extends Controller
     {
         $bill = Bill::with('customer')->findOrFail($id);
         $companyDetails = CompanyDetail::first();
-        $bill = (new BillTransformer)->transformForBill($bill, $companyDetails);
-        $pdf = Pdf::loadView('bill.pdf', $bill);
+        $billData = (new BillTransformer)->transformForBill($bill, $companyDetails);
+        $pdf = Pdf::loadView('bill.pdf', $billData);
+        $billNo = str_replace('/', '_', $bill->bill_no); // Replace / with _
+        $fileName = $billNo . '.pdf';
+        $filePath = storage_path('app/invoices/' . $fileName);
 
-        return $pdf->download($bill['bill_no'] . '.pdf');
+        // Download the PDF file
+        $pdf->save($filePath);
+
+        UploadBillToGoogleDrive::dispatch($filePath, $bill);
+
+        return $pdf->download($fileName);
     }
 
     public function getHolidayDates()

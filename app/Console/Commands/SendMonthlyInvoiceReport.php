@@ -45,13 +45,17 @@ class SendMonthlyInvoiceReport extends Command
             foreach ($bills as $bill) {
                 $transformedBill = (new BillTransformer)->transformForBill($bill, $companyDetails);
                 $pdf = PDF::loadView('bill.pdf', $transformedBill);
-                $pdfPath = storage_path('app/invoices/' . $transformedBill['bill_id'] . '.pdf');
+                $pdfPath = storage_path('app/invoices/' . str_replace('/', '_', $transformedBill['bill_no']) . '.pdf');
                 $pdf->save($pdfPath);
                 $pdfs[] = $pdfPath;
             }
 
             Mail::to($companyDetails->email)
                 ->send(new MonthlyInvoiceReportMail($pdfs, $bills));
+
+            foreach ($pdfs as $pdf) {
+                unlink($pdf);  // Delete the local file after uploading
+            }
 
             info('Monthly Invoice Report Sent Successfully..!!');
         } catch (\Exception $e) {

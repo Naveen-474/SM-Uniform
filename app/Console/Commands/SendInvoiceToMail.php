@@ -36,6 +36,8 @@ class SendInvoiceToMail extends Command
                 ->send(new InvoiceEmail($bill['customer_name'], $pdfPath));
 
             $this->info('Invoice email sent successfully.');
+
+            unlink($pdfPath);  // Delete the local file after uploading
         } catch (\Exception $e) {
             // Handle any exceptions
             $this->error('Error: ' . $e->getMessage());

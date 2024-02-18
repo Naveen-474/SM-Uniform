@@ -58,16 +58,9 @@ class MonthlyInvoiceReportMail extends Mailable
     public function attachments(): array
     {
         $attachments = [];
-        $i = 0;
 
         foreach ($this->pdfPaths as $filePath) {
-            $fileExtension = pathinfo($filePath, PATHINFO_EXTENSION);
-            $sanitizedBillNo = str_replace('/', '_', $this->bills[$i]['bill_no']);
-            $newFileName = $sanitizedBillNo . '.' . $fileExtension;
-            $newFilePath = pathinfo($filePath, PATHINFO_DIRNAME) . '/' . $newFileName;
-            rename($filePath, $newFilePath);
-            $attachments[] = Attachment::fromPath($newFilePath);
-            $i++;
+            $attachments[] = Attachment::fromPath($filePath);
         }
 
         return $attachments;

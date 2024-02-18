@@ -14,6 +14,8 @@ class Kernel extends ConsoleKernel
     {
 //        $schedule->command('send:invoice-to-mail 5')->everyFiveMinutes();
         $schedule->command('send:monthly-invoice-report')->monthly()->at('01:23');
+        $schedule->command('backup:clean')->daily()->at('01:00');
+        $schedule->command('backup:run')->daily()->at('01:30');
     }
 
     /**
